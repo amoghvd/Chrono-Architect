@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "policy": {
+    "denyList": [
+      "aws ec2 terminate-instances",
+      "aws ec2 delete-volume",
+      "aws ec2 delete-snapshot",
+      "aws iam create-user",
+      "aws iam create-access-key",
+      "aws organizations leave-organization"
+    ],
+    "elicitList": [
+      "aws ec2 stop-instances",
+      "aws ec2 modify-instance-attribute",
+      "aws ec2 start-instances"
+    ]
+  }
+}

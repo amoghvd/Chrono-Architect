@@ -1,0 +1,24 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "IdentityAndReadEvidence",
+      "Effect": "Allow",
+      "Action": [
+        "sts:GetCallerIdentity",
+        "ec2:DescribeInstances", "ec2:DescribeInstanceTypes", "ec2:DescribeInstanceStatus",
+        "ec2:DescribeVolumes", "ec2:DescribeNetworkInterfaces", "ec2:DescribeTags",
+        "autoscaling:DescribeAutoScalingInstances", "autoscaling:DescribeAutoScalingGroups",
+        "elasticloadbalancing:DescribeTargetHealth",
+        "cloudwatch:GetMetricData", "cloudwatch:GetMetricStatistics", "cloudwatch:ListMetrics",
+        "cloudwatch:DescribeAlarms",
+        "compute-optimizer:GetEC2InstanceRecommendations",
+        "compute-optimizer:GetEnrollmentStatus",
+        "ce:GetCostAndUsage", "ce:GetCostAndUsageWithResources", "ce:GetDimensionValues",
+        "ce:GetSavingsPlansCoverage", "ce:GetReservationCoverage",
+        "pricing:GetProducts", "pricing:DescribeServices", "pricing:GetAttributeValues"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
