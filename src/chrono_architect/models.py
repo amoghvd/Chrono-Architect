@@ -139,7 +139,9 @@ class Proposal(StrictModel):
     rollback_plan: list[ActionStep]
     health_check_url: str | None = None
     production: bool = False
+    manager_analysis: str | None = None
     proposal_hash: str | None = None
+
 
 
 class Approval(StrictModel):

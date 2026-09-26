@@ -56,11 +56,15 @@ class StdioAwsMcpGateway(AwsGateway):
             envelope = json.loads(joined)
         except json.JSONDecodeError as exc:
             raise McpError(f"MCP returned non-JSON content: {joined[:300]}") from exc
+        if isinstance(envelope, list):
+            if not envelope:
+                raise McpError("MCP returned empty list response")
+            envelope = envelope[0]
         if envelope.get("error"):
             raise McpError(envelope["error"])
         response = envelope.get("response", envelope)
         # The server response may contain a serialized CLI JSON payload.
-        for key in ("json", "output", "stdout"):
+        for key in ("as_json", "json", "output", "stdout"):
             candidate = response.get(key) if isinstance(response, dict) else None
             if isinstance(candidate, str):
                 try:

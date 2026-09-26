@@ -1,0 +1,328 @@
+{
+  "schema_version": "1.0",
+  "run_id": "6a415629-e37c-4993-9dec-a42cddfb294e",
+  "created_at": "2026-09-26T12:37:33.720461Z",
+  "expires_at": "2026-09-26T13:07:33.720461Z",
+  "instance": {
+    "account_id": "383429695199",
+    "region": "us-east-1",
+    "instance_id": "i-004cfd744e54675ac",
+    "instance_type": "t3.micro",
+    "state": "running",
+    "architecture": "x86_64",
+    "lifecycle": "on-demand",
+    "root_device_type": "ebs",
+    "asg_name": null,
+    "tags": {
+      "Name": "chrono-architect-demo",
+      "chrono-architect:managed": "true"
+    },
+    "volume_ids": [
+      "vol-0b064238cb5529af2"
+    ],
+    "eni_ids": [
+      "eni-05c1efd3136dfe70d"
+    ],
+    "security_group_ids": [
+      "sg-0943369069710f56d"
+    ],
+    "public_ip": "13.218.156.114",
+    "has_instance_store_mapping": false,
+    "raw_fingerprint": "b0bd439d1a543f4a276b976b9d9a4b7dc185ce9d6a763575b032e16328a987a1"
+  },
+  "target_instance_type": "t3.small",
+  "evidence_window_days": 14,
+  "metrics": [
+    {
+      "metric": "CPUUtilization",
+      "unit": "Percent",
+      "datapoints": 1,
+      "average": "0.1864",
+      "p95": "0.1864381174759078",
+      "maximum": "0.1864381174759078",
+      "start": "2026-09-12T12:37:19Z",
+      "end": "2026-09-26T12:37:19Z"
+    },
+    {
+      "metric": "NetworkIn",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "423.1628",
+      "p95": "423.16279069767444",
+      "maximum": "423.16279069767444",
+      "start": "2026-09-12T12:37:19Z",
+      "end": "2026-09-26T12:37:19Z"
+    },
+    {
+      "metric": "NetworkOut",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "372.1860",
+      "p95": "372.1860465116279",
+      "maximum": "372.1860465116279",
+      "start": "2026-09-12T12:37:19Z",
+      "end": "2026-09-26T12:37:19Z"
+    },
+    {
+      "metric": "EBSReadBytes",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "4344157.0909",
+      "p95": "4344157.090909091",
+      "maximum": "4344157.090909091",
+      "start": "2026-09-12T12:37:19Z",
+      "end": "2026-09-26T12:37:19Z"
+    },
+    {
+      "metric": "EBSWriteBytes",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "4131688.7273",
+      "p95": "4131688.727272727",
+      "maximum": "4131688.727272727",
+      "start": "2026-09-12T12:37:19Z",
+      "end": "2026-09-26T12:37:19Z"
+    }
+  ],
+  "historical_cost": {
+    "source": "Cost Explorer",
+    "metric": "UnblendedCost",
+    "start": "2026-09-12T00:00:00Z",
+    "end": "2026-09-26T00:00:00Z",
+    "amount": "0",
+    "currency": "USD",
+    "resource_level": true,
+    "caveats": [
+      "Cost Explorer data is delayed and resource-level EC2 data requires opt-in."
+    ]
+  },
+  "checks": [
+    {
+      "name": "managed-tag",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "tag": "chrono-architect:managed"
+      },
+      "explanation": "Resource must explicitly opt in to Chrono-Architect actions"
+    },
+    {
+      "name": "standalone-instance",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "asg": null
+      },
+      "explanation": "ASG members require launch-template/instance-refresh workflow"
+    },
+    {
+      "name": "on-demand",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "lifecycle": "on-demand"
+      },
+      "explanation": "Spot instances are outside the first safe-action slice"
+    },
+    {
+      "name": "ebs-backed",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "root": "ebs"
+      },
+      "explanation": "Stop/start requires an EBS-backed root device"
+    },
+    {
+      "name": "no-instance-store",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {},
+      "explanation": "Stop/type-change can destroy instance-store data"
+    },
+    {
+      "name": "architecture-compatible",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "supported": [
+          "x86_64"
+        ]
+      },
+      "explanation": "Target must support the current architecture"
+    },
+    {
+      "name": "eni-capacity",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "attached": 1,
+        "limit": 3
+      },
+      "explanation": "Target instance must support attached ENIs"
+    },
+    {
+      "name": "production-health-check",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {},
+      "explanation": "Production workloads require an external application health check"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "no-change",
+      "target_instance_type": "t3.micro",
+      "estimated_cost": {
+        "currency": "USD",
+        "current_hourly": "0.0104",
+        "target_hourly": "0.0104",
+        "monthly_hours": "730",
+        "current_monthly": "7.59",
+        "target_monthly": "7.59",
+        "monthly_savings": "0.00",
+        "savings_percent": "0.00",
+        "basis": "AWS Price List API",
+        "confidence": "medium",
+        "caveats": [
+          "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+          "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+          "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+        ]
+      },
+      "risk_score": 0,
+      "blast_radius": [],
+      "downtime_required": false,
+      "reversible": true,
+      "uncertainty": []
+    },
+    {
+      "name": "right-size",
+      "target_instance_type": "t3.small",
+      "estimated_cost": {
+        "currency": "USD",
+        "current_hourly": "0.0104",
+        "target_hourly": "0.0208",
+        "monthly_hours": "730",
+        "current_monthly": "7.59",
+        "target_monthly": "15.18",
+        "monthly_savings": "-7.59",
+        "savings_percent": "-100.00",
+        "basis": "AWS Price List API",
+        "confidence": "medium",
+        "caveats": [
+          "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+          "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+          "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+        ]
+      },
+      "risk_score": 20,
+      "blast_radius": [
+        "i-004cfd744e54675ac",
+        "eni-05c1efd3136dfe70d",
+        "vol-0b064238cb5529af2"
+      ],
+      "downtime_required": true,
+      "reversible": true,
+      "uncertainty": [
+        "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+        "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+        "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+      ]
+    },
+    {
+      "name": "idle-decommission",
+      "target_instance_type": "decommissioned",
+      "estimated_cost": {
+        "currency": "USD",
+        "current_hourly": "0.0104",
+        "target_hourly": "0",
+        "monthly_hours": "730",
+        "current_monthly": "7.59",
+        "target_monthly": "0.00",
+        "monthly_savings": "7.59",
+        "savings_percent": "100.00",
+        "basis": "AWS Price List API",
+        "confidence": "high",
+        "caveats": [
+          "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+          "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+          "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+        ]
+      },
+      "risk_score": 85,
+      "blast_radius": [
+        "i-004cfd744e54675ac",
+        "eni-05c1efd3136dfe70d",
+        "vol-0b064238cb5529af2",
+        "Data Retention"
+      ],
+      "downtime_required": true,
+      "reversible": false,
+      "uncertainty": [
+        "Irreversible deletion risk if instance is decommissioned"
+      ]
+    }
+  ],
+  "selected_scenario": "right-size",
+  "action_plan": [
+    {
+      "service": "ec2",
+      "operation": "stop-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "modify-instance-attribute",
+      "parameters": {
+        "instance_id": "i-004cfd744e54675ac",
+        "instance_type": "t3.small"
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "start-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    }
+  ],
+  "rollback_plan": [
+    {
+      "service": "ec2",
+      "operation": "stop-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "modify-instance-attribute",
+      "parameters": {
+        "instance_id": "i-004cfd744e54675ac",
+        "instance_type": "t3.micro"
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "start-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    }
+  ],
+  "health_check_url": null,
+  "production": false,
+  "manager_analysis": "To optimize the resource change from t3.micro to t3.small while mitigating risks, we will implement a forensic audit of the EC2 instance’s usage patterns and cost impact, ensuring no unnecessary expenses are incurred during the transition. Additionally, we will establish blast radius containment by temporarily limiting the instance's available resources during the upgrade, and actively engage in negotiations with AWS for potential discounts or reserved pricing options to enhance cost savings while maintaining operational efficiency.",
+  "proposal_hash": "92aad4886c53a14498e07584937956c6b6ce5c77f8f2a7d3ca7880dca9300ab4"
+}

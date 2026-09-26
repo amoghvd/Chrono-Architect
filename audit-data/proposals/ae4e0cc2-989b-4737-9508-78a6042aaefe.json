@@ -1,0 +1,294 @@
+{
+  "schema_version": "1.0",
+  "run_id": "ae4e0cc2-989b-4737-9508-78a6042aaefe",
+  "created_at": "2026-09-26T11:55:51.406279Z",
+  "expires_at": "2026-09-26T12:25:51.406279Z",
+  "instance": {
+    "account_id": "383429695199",
+    "region": "us-east-1",
+    "instance_id": "i-004cfd744e54675ac",
+    "instance_type": "t3.micro",
+    "state": "running",
+    "architecture": "x86_64",
+    "lifecycle": "on-demand",
+    "root_device_type": "ebs",
+    "asg_name": null,
+    "tags": {
+      "Name": "chrono-architect-demo",
+      "chrono-architect:managed": "true"
+    },
+    "volume_ids": [
+      "vol-0b064238cb5529af2"
+    ],
+    "eni_ids": [
+      "eni-05c1efd3136dfe70d"
+    ],
+    "security_group_ids": [
+      "sg-0943369069710f56d"
+    ],
+    "public_ip": "13.218.156.114",
+    "has_instance_store_mapping": false,
+    "raw_fingerprint": "b0bd439d1a543f4a276b976b9d9a4b7dc185ce9d6a763575b032e16328a987a1"
+  },
+  "target_instance_type": "t3.small",
+  "evidence_window_days": 14,
+  "metrics": [
+    {
+      "metric": "CPUUtilization",
+      "unit": "Percent",
+      "datapoints": 1,
+      "average": "0.1227",
+      "p95": "0.122680783466165",
+      "maximum": "0.122680783466165",
+      "start": "2026-09-12T11:55:19Z",
+      "end": "2026-09-26T11:55:19Z"
+    },
+    {
+      "metric": "NetworkIn",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "1002.0000",
+      "p95": "1002.0",
+      "maximum": "1002.0",
+      "start": "2026-09-12T11:55:19Z",
+      "end": "2026-09-26T11:55:19Z"
+    },
+    {
+      "metric": "NetworkOut",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "870.0000",
+      "p95": "870.0",
+      "maximum": "870.0",
+      "start": "2026-09-12T11:55:19Z",
+      "end": "2026-09-26T11:55:19Z"
+    },
+    {
+      "metric": "EBSReadBytes",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "95571456.0000",
+      "p95": "95571456.0",
+      "maximum": "95571456.0",
+      "start": "2026-09-12T11:55:19Z",
+      "end": "2026-09-26T11:55:19Z"
+    },
+    {
+      "metric": "EBSWriteBytes",
+      "unit": "Bytes",
+      "datapoints": 1,
+      "average": "59396864.0000",
+      "p95": "59396864.0",
+      "maximum": "59396864.0",
+      "start": "2026-09-12T11:55:19Z",
+      "end": "2026-09-26T11:55:19Z"
+    }
+  ],
+  "historical_cost": {
+    "source": "Cost Explorer",
+    "metric": "UnblendedCost",
+    "start": "2026-09-12T00:00:00Z",
+    "end": "2026-09-26T00:00:00Z",
+    "amount": "0",
+    "currency": "USD",
+    "resource_level": true,
+    "caveats": [
+      "Cost Explorer data is delayed and resource-level EC2 data requires opt-in."
+    ]
+  },
+  "checks": [
+    {
+      "name": "managed-tag",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "tag": "chrono-architect:managed"
+      },
+      "explanation": "Resource must explicitly opt in to Chrono-Architect actions"
+    },
+    {
+      "name": "standalone-instance",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "asg": null
+      },
+      "explanation": "ASG members require launch-template/instance-refresh workflow"
+    },
+    {
+      "name": "on-demand",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "lifecycle": "on-demand"
+      },
+      "explanation": "Spot instances are outside the first safe-action slice"
+    },
+    {
+      "name": "ebs-backed",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "root": "ebs"
+      },
+      "explanation": "Stop/start requires an EBS-backed root device"
+    },
+    {
+      "name": "no-instance-store",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {},
+      "explanation": "Stop/type-change can destroy instance-store data"
+    },
+    {
+      "name": "architecture-compatible",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "supported": [
+          "x86_64"
+        ]
+      },
+      "explanation": "Target must support the current architecture"
+    },
+    {
+      "name": "eni-capacity",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {
+        "attached": 1,
+        "limit": 3
+      },
+      "explanation": "Target instance must support attached ENIs"
+    },
+    {
+      "name": "production-health-check",
+      "status": "PASS",
+      "critical": true,
+      "evidence": {},
+      "explanation": "Production workloads require an external application health check"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "no-change",
+      "target_instance_type": "t3.micro",
+      "estimated_cost": {
+        "currency": "USD",
+        "current_hourly": "0.0104",
+        "target_hourly": "0.0104",
+        "monthly_hours": "730",
+        "current_monthly": "7.59",
+        "target_monthly": "7.59",
+        "monthly_savings": "0.00",
+        "savings_percent": "0.00",
+        "basis": "AWS Price List API",
+        "confidence": "medium",
+        "caveats": [
+          "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+          "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+          "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+        ]
+      },
+      "risk_score": 0,
+      "blast_radius": [],
+      "downtime_required": false,
+      "reversible": true,
+      "uncertainty": []
+    },
+    {
+      "name": "right-size",
+      "target_instance_type": "t3.small",
+      "estimated_cost": {
+        "currency": "USD",
+        "current_hourly": "0.0104",
+        "target_hourly": "0.0208",
+        "monthly_hours": "730",
+        "current_monthly": "7.59",
+        "target_monthly": "15.18",
+        "monthly_savings": "-7.59",
+        "savings_percent": "-100.00",
+        "basis": "AWS Price List API",
+        "confidence": "medium",
+        "caveats": [
+          "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+          "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+          "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+        ]
+      },
+      "risk_score": 20,
+      "blast_radius": [
+        "i-004cfd744e54675ac",
+        "eni-05c1efd3136dfe70d",
+        "vol-0b064238cb5529af2"
+      ],
+      "downtime_required": true,
+      "reversible": true,
+      "uncertainty": [
+        "Public On-Demand price; realized savings may differ under Savings Plans, RIs, credits, or private pricing.",
+        "Memory utilization is unknown unless CloudWatch Agent metrics are separately configured.",
+        "Cost Explorer billing data is delayed; immediate verification proves configuration, not realized savings."
+      ]
+    }
+  ],
+  "selected_scenario": "right-size",
+  "action_plan": [
+    {
+      "service": "ec2",
+      "operation": "stop-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "modify-instance-attribute",
+      "parameters": {
+        "instance_id": "i-004cfd744e54675ac",
+        "instance_type": "t3.small"
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "start-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    }
+  ],
+  "rollback_plan": [
+    {
+      "service": "ec2",
+      "operation": "stop-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "modify-instance-attribute",
+      "parameters": {
+        "instance_id": "i-004cfd744e54675ac",
+        "instance_type": "t3.micro"
+      }
+    },
+    {
+      "service": "ec2",
+      "operation": "start-instances",
+      "parameters": {
+        "instance_ids": [
+          "i-004cfd744e54675ac"
+        ]
+      }
+    }
+  ],
+  "health_check_url": null,
+  "production": false,
+  "proposal_hash": "6d48949afcc71806ba2c8f75ae9a104afb02fb2ac4c173d61aec42fb5f9c93ac"
+}

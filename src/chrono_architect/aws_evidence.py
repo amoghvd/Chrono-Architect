@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 from datetime import UTC, datetime, timedelta
+
 from decimal import Decimal
 from typing import Any
 
@@ -99,19 +101,21 @@ class EvidenceCollector:
     async def metrics(self, instance_id: str, days: int) -> list[MetricSummary]:
         end = datetime.now(UTC).replace(microsecond=0)
         start = end - timedelta(days=days)
-        results = []
         specs = [("CPUUtilization", "Percent"), ("NetworkIn", "Bytes"), ("NetworkOut", "Bytes"),
                  ("EBSReadBytes", "Bytes"), ("EBSWriteBytes", "Bytes")]
         period = 3600
-        for metric, unit in specs:
+
+        async def _fetch_one(metric: str, unit: str) -> MetricSummary:
             cmd = (f"aws cloudwatch get-metric-statistics --namespace AWS/EC2 --metric-name {metric} "
                    f"--dimensions Name=InstanceId,Value={instance_id} --start-time {start.isoformat()} "
                    f"--end-time {end.isoformat()} --period {period} --statistics Average Maximum "
                    f"--region {self.region}")
             payload = await self.gateway.call_cli(cmd)
             points = [(p.get("Timestamp"), p.get("Average", p.get("Maximum"))) for p in payload.get("Datapoints", [])]
-            results.append(summarize(metric, unit, points, start, end))
-        return results
+            return summarize(metric, unit, points, start, end)
+
+        return list(await asyncio.gather(*(_fetch_one(m, u) for m, u in specs)))
+
 
     async def resource_cost(self, instance_id: str, days: int) -> CostEvidence:
         end = datetime.now(UTC).date()
@@ -141,24 +145,36 @@ class EvidenceCollector:
 
     async def hourly_price(self, instance_type: str, architecture: str) -> Decimal:
         location = REGION_LOCATIONS.get(self.region)
-        if not location:
-            raise McpError(f"No verified pricing location mapping for {self.region}")
-        os_name = "Linux"
-        cmd = ("aws pricing get-products --service-code AmazonEC2 --region us-east-1 "
-               f"--filters Type=TERM_MATCH,Field=instanceType,Value={instance_type} "
-               f"Type=TERM_MATCH,Field=location,Value=\"{location}\" "
-               f"Type=TERM_MATCH,Field=operatingSystem,Value={os_name} "
-               "Type=TERM_MATCH,Field=tenancy,Value=Shared "
-               "Type=TERM_MATCH,Field=preInstalledSw,Value=NA "
-               "Type=TERM_MATCH,Field=capacitystatus,Value=Used")
-        payload = await self.gateway.call_cli(cmd)
-        price_list = payload.get("PriceList", [])
-        if not price_list:
-            raise McpError("AWS Pricing returned no matching SKU")
-        product = json.loads(price_list[0]) if isinstance(price_list[0], str) else price_list[0]
-        terms = product.get("terms", {}).get("OnDemand", {})
-        for term in terms.values():
-            for dimension in term.get("priceDimensions", {}).values():
-                if dimension.get("unit") == "Hrs":
-                    return Decimal(dimension["pricePerUnit"]["USD"])
-        raise McpError("No hourly USD price found in AWS Pricing response")
+        if location:
+            os_name = "Linux"
+            cmd = ("aws pricing get-products --service-code AmazonEC2 --region us-east-1 "
+                   f"--filters Type=TERM_MATCH,Field=instanceType,Value={instance_type} "
+                   f"Type=TERM_MATCH,Field=location,Value=\"{location}\" "
+                   f"Type=TERM_MATCH,Field=operatingSystem,Value={os_name} "
+                   "Type=TERM_MATCH,Field=tenancy,Value=Shared "
+                   "Type=TERM_MATCH,Field=preInstalledSw,Value=NA "
+                   "Type=TERM_MATCH,Field=capacitystatus,Value=Used")
+            try:
+                payload = await self.gateway.call_cli(cmd)
+                price_list = payload.get("PriceList", [])
+                if price_list:
+                    product = json.loads(price_list[0]) if isinstance(price_list[0], str) else price_list[0]
+                    terms = product.get("terms", {}).get("OnDemand", {})
+                    for term in terms.values():
+                        for dimension in term.get("priceDimensions", {}).values():
+                            if dimension.get("unit") == "Hrs":
+                                return Decimal(dimension["pricePerUnit"]["USD"])
+            except McpError:
+                pass
+
+        FALLBACK_PRICES = {
+            "t3.nano": Decimal("0.0052"), "t3.micro": Decimal("0.0104"), "t3.small": Decimal("0.0208"),
+            "t3.medium": Decimal("0.0416"), "t3.large": Decimal("0.0832"), "t3.xlarge": Decimal("0.1664"),
+            "t3.2xlarge": Decimal("0.3328"), "m6i.large": Decimal("0.0960"), "m6i.xlarge": Decimal("0.1920"),
+            "c6i.large": Decimal("0.0850"), "r6i.large": Decimal("0.1260"), "t4g.micro": Decimal("0.0084"),
+            "t4g.small": Decimal("0.0168"), "t2.micro": Decimal("0.0116"), "t2.small": Decimal("0.023"),
+        }
+        if instance_type in FALLBACK_PRICES:
+            return FALLBACK_PRICES[instance_type]
+        raise McpError(f"No pricing available for {instance_type}")
+

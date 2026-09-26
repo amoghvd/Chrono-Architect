@@ -5,3 +5,8 @@ __pycache__/
 .env
 audit-data/*.json
 audit-data/*.jsonl
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+*.egg-info/

@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { font-family: 'DM Sans', sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; }
+button, input { font: inherit; }
+input:not([type='checkbox']) { width: 100%; height: 35px; border: 1px solid #dfe6e2; border-radius: 5px; background: #fff; padding: 0 9px; color: #24322d; font-family: 'DM Mono', monospace; font-size: 10px; outline: none; }
+input:not([type='checkbox']):focus { border-color: #54ad82; box-shadow: 0 0 0 3px rgb(84 173 130 / 12%); }
+input::placeholder { color: #aab4af; }
+::selection { background: #c8efda; }

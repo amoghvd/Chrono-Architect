@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
 from .config import Settings
@@ -24,6 +27,11 @@ class AnalyzeRequest(BaseModel):
 @app.get("/healthz")
 def healthz():
     return {"status": "ok", "mode": "real-mcp"}
+
+@app.get("/v1/instances")
+async def list_instances():
+    return await agent.list_instances()
+
 
 @app.post("/v1/investigations")
 async def investigate(request: AnalyzeRequest):
@@ -52,3 +60,6 @@ async def execute(run_id: str, approval: Approval):
         raise HTTPException(status_code=404, detail="Run not found") from exc
     except PolicyViolation as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
+
+# Serve the same-origin operator console from the API process.
+app.mount("/", StaticFiles(directory=Path(__file__).parent / "static", html=True), name="frontend")

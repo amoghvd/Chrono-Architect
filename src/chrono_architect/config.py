@@ -22,3 +22,5 @@ class Settings(BaseSettings):
     mcp_tool: str = "call_aws"
     analyzer_aws_profile: str | None = None
     executor_aws_profile: str | None = None
+    openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
+
