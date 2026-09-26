@@ -1,18 +1,19 @@
-# Stage 1: Build frontend
+# Stage 1: Build the React frontend
 FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
+# Build output goes to ../src/chrono_architect/static via vite config
 RUN npm run build
 
-# Stage 2: Build Python backend
+# Stage 2: Python backend
 FROM python:3.12-slim
-RUN pip install --no-cache-dir uv awscli
+RUN pip install --no-cache-dir uv
 WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY src ./src
-# Copy built frontend into the static directory the API serves
+# Copy built frontend static files from stage 1
 COPY --from=frontend-builder /app/src/chrono_architect/static ./src/chrono_architect/static
 RUN uv pip install --system --no-cache .
 RUN useradd --create-home --uid 10001 chrono && mkdir -p /app/audit-data && chown -R chrono:chrono /app

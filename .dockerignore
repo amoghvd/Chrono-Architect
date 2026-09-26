@@ -3,5 +3,5 @@
 __pycache__
 .pytest_cache
 audit-data/*
+.env
 frontend/node_modules
-dist
