@@ -4,7 +4,9 @@
 investigate a real EC2 instance, compare futures, pause at a cryptographically bound
 human checkpoint, act through the official AWS API MCP server, and verify the result.
 
-For a comprehensive project presentation, see [Chrono-Architect Overview PDF](docs/overview.pdf).
+For a comprehensive project presentation, see [Chrono-Architect Architecture Overview](docs/ARCHITECTURE.md) and the [Demo Runbook](docs/DEMO.md).
+
+**Live deployment:** <https://chrono-architect.onrender.com> — see [`deployment.txt`](../deployment.txt) for the URL.
 
 
 ## What is real
